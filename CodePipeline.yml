@@ -4,7 +4,7 @@ Resources:
   PipelineArtifactsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub codepipeline-artifacts-4-${AWS::AccountId}-${AWS::Region}
+      BucketName: !Sub codepipeline-artifacts-5-${AWS::AccountId}-${AWS::Region}
 
   # IAM Role for CodePipeline
   CodePipelineRole:
@@ -62,7 +62,7 @@ Resources:
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: CodeBuildProject4
+      Name: CodeBuildProject5
       Source:
         Type: CODEPIPELINE
       Artifacts:
@@ -110,7 +110,7 @@ Resources:
               OutputArtifacts:
                 - Name: BuildOutput
               Configuration:
-                ProjectName: CodeBuildProject4
+                ProjectName: CodeBuildProject5
 
 Outputs:
   CodePipelineName:
