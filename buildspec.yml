@@ -17,7 +17,7 @@ phases:
         docker login --username AWS --password-stdin ${ECR_REPOSITORY_URI})
       - echo Retrieving ECR repository URI...
       - >
-      - echo REPO_URI: ${REPO_URI}
+      - echo REPO_URI: ${ECR_REPOSITORY_URI}
       - echo Determining image tag...
       - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
 
