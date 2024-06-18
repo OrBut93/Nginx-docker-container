@@ -1,0 +1,37 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: "eu-central-1"  
+    ECR_REPO_NAME: "nginx-docker-image"  # Replace with your ECR repository name
+    ECS_CLUSTER_NAME: "lab-ecs-cluster"  # Replace with your ECS cluster name
+    ECS_SERVICE_NAME: "lab-ecs-service"  # Replace with your ECS service name
+  parameter-store:
+    ECR_REPOSITORY_URI: "763217257322.dkr.ecr.eu-central-1.amazonaws.com/nginx-docker-image"  # Path to the ECR repository URI 
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REPOSITORY_URI})
+      - echo Retrieving ECR repository URI...
+      - REPO_URI=$(aws ssm get-parameter --name ${ECR_REPOSITORY_URI} --query "Parameter.Value" --output text)
+      - echo REPO_URI: $REPO_URI
+      - echo Determining image tag...
+      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t ${REPO_URI}:${IMAGE_TAG} .
+      - docker tag ${REPO_URI}:${IMAGE_TAG} ${REPO_URI}:latest
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image to ECR...
+      - docker push ${REPO_URI}:${IMAGE_TAG}
+      - docker push ${REPO_URI}:latest
+      - echo Updating ECS service...
+      - aws ecs update-service --
