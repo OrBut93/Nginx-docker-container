@@ -17,8 +17,7 @@ phases:
         docker login --username AWS --password-stdin ${ECR_REPOSITORY_URI})
       - echo Retrieving ECR repository URI...
       - >
-        REPO_URI=$(aws ssm get-parameter --name ${ECR_REPOSITORY_URI} --query "Parameter.Value" --output text)
-      - echo REPO_URI: $REPO_URI
+      - echo REPO_URI: ${REPO_URI}
       - echo Determining image tag...
       - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
 
