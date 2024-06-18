@@ -111,3 +111,8 @@ Resources:
                 - Name: BuildOutput
               Configuration:
                 ProjectName: MyCodeBuildProject
+
+Outputs:
+  CodePipelineName:
+    Value: !Ref CodePipeline
+    Description: Name of the CodePipeline
