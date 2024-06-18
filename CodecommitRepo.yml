@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+
+  # CodeCommit Repository
+  MyCodeCommitRepository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: Lab-MyCodeRepository
+      RepositoryDescription: "Repository Commitlab "
+
+
+Outputs:
+  RepositoryCloneUrl:
+    Description: "URL to clone the repository"
+    Value: !GetAtt MyCodeCommitRepository.CloneUrlHttp
