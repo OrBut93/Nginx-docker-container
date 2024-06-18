@@ -5,3 +5,29 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub codepipeline-artifacts-${AWS::AccountId}-${AWS::Region}
+
+  # IAM Role for CodePipeline
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodePipelinePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:*'
+                  - 'codecommit:*'
+                  - 'codebuild:*'
+                  - 'ecs:*'
+                  - 'ecr:*'
+                  - 'logs:*'
+                Resource: '*'
