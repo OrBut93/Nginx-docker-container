@@ -13,9 +13,12 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - $(aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_REPOSITORY_URI})
+      - >
+        $(aws ecr get-login-password --region $AWS_REGION | 
+        docker login --username AWS --password-stdin ${ECR_REPOSITORY_URI})
       - echo Retrieving ECR repository URI...
-      - REPO_URI=$(aws ssm get-parameter --name ${ECR_REPOSITORY_URI} --query "Parameter.Value" --output text)
+      - >
+        REPO_URI=$(aws ssm get-parameter --name ${ECR_REPOSITORY_URI} --query "Parameter.Value" --output text)
       - echo REPO_URI: $REPO_URI
       - echo Determining image tag...
       - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
@@ -24,7 +27,8 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - docker build -t ${REPO_URI}:${IMAGE_TAG} .
+      - >
+        docker build -t ${REPO_URI}:${IMAGE_TAG} .
       - docker tag ${REPO_URI}:${IMAGE_TAG} ${REPO_URI}:latest
 
   post_build:
@@ -34,4 +38,11 @@ phases:
       - docker push ${REPO_URI}:${IMAGE_TAG}
       - docker push ${REPO_URI}:latest
       - echo Updating ECS service...
-      - aws ecs update-service --
+      - >
+        aws ecs update-service --cluster ${ECS_CLUSTER_NAME} 
+        --service ${ECS_SERVICE_NAME} --force-new-deployment
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
