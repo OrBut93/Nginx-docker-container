@@ -6,7 +6,8 @@ env:
     ECR_REPO_NAME: "nginx-docker-image"  
     ECS_CLUSTER_NAME: "lab-ecs-cluster"  
     ECS_SERVICE_NAME: "lab-ecs-service" 
-    ECR_LOGIN: "763217257322.dkr.ecr.eu-central-1.amazonaws.com" 
+    ECR_LOGIN: "763217257322.dkr.ecr.eu-central-1.amazonaws.com"
+    ECR_REPOSITORY_URI: "763217257322.dkr.ecr.eu-central-1.amazonaws.com/nginx-docker-image" 
 
 phases:
   pre_build:
@@ -14,22 +15,20 @@ phases:
       - echo Logging in to Amazon ECR...
       - >
         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${ECR_LOGIN}
-      - echo Determining image tag...
-      - IMAGE_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+   
 
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
       - >
-        docker build -t ${ECR_REPOSITORY_URI}:${IMAGE_TAG} .
-      - docker tag ${ECR_REPOSITORY_URI}:${IMAGE_TAG} ${ECR_REPOSITORY_URI}:latest
+        docker build -t ${ECR_REPO_NAME}:latest .
+      - docker tag ${ECR_REPO_NAME}:latest ${ECR_REPOSITORY_URI}:latest
 
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image to ECR...
-      - docker push ${ECR_REPOSITORY_URI}:${IMAGE_TAG}
       - docker push ${ECR_REPOSITORY_URI}:latest
       - echo Updating ECS service...
       - >
