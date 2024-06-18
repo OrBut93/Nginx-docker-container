@@ -1,0 +1,36 @@
+{
+    "family": "nginx-task-family-sql",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::763217257322:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+      {
+        "name": "nginx",
+        "image": "763217257322.dkr.ecr.eu-central-1.amazonaws.com/nginx-docker-image:latest",
+        "portMappings": [
+          {
+            "containerPort": 443,
+            "hostPort": 443,
+            "protocol": "tcp"
+          }
+        ],
+        "environment": [
+                {
+                    "name": "NGINX_HOST",
+                    "value": "localhost"
+                },
+                {
+                    "name": "NGINX_PORT",
+                    "value": "443"
+                }
+            ],
+        "essential": true
+      }
+    ]
+    
+  }
+  
