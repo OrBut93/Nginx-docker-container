@@ -31,3 +31,29 @@ Resources:
                   - 'ecr:*'
                   - 'logs:*'
                 Resource: '*'
+
+   # IAM Role for CodeBuild
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:*'
+                  - 'codecommit:*'
+                  - 'logs:*'
+                  - 'ecr:*'
+                  - 'ecs:*'
+                  - 'sts:AssumeRole'
+                Resource: '*'
