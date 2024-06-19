@@ -21,19 +21,19 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - >
-        docker build -t ${ECR_REPOSITORY_URI}:latest .
-      - docker tag ${ECR_REPOSITORY_URI}:latest ${ECR_REPOSITORY_URI}:latest
+        docker build -t $ECR_REPOSITORY_URI:latest .
+      - docker tag $ECR_REPOSITORY_URI:latest $ECR_REPOSITORY_URI:latest
 
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image to ECR...
       - docker push $ECR_REPOSITORY_URI:latest
-      - docker push ${ECR_REPOSITORY_URI}:latest
+      - docker push $ECR_REPOSITORY_URI:latest
       - echo Updating ECS service...
       - >
-        aws ecs update-service --cluster ${ECS_CLUSTER_NAME} 
-        --service ${ECS_SERVICE_NAME} --force-new-deployment
+        aws ecs update-service --cluster $ECS_CLUSTER_NAME 
+        --service $ECS_SERVICE_NAME --force-new-deployment
 
 artifacts:
   files:
